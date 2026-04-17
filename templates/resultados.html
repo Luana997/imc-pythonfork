@@ -4,6 +4,19 @@
 
 {% block conteudo %}
 
+<div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for categoria, mensagem in messages %}
+            <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+                {{ mensagem }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>📋 Resultados de Cálculos</h2>
     <div>
