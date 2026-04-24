@@ -38,16 +38,21 @@
             </tr>
         </thead>
         <tbody>
+            {% for calc in calculos %}
+            {% set imc =  calcular(calc['peso'], calc['altura']) %}
             <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>70.5</td>
-                <td>1.75</td>
-                <td>22.86</td>
+                <td>  {{ calc['id_calculo'] }}  </td>
+                <td>  {{ calc['nome'] }}  </td>
+                <td>  {{ calc['peso'] }}  </td>
+                <td>  {{ calc['altura'] }}  </td>
+                <td> {{ imc }} </td>
                 <td>
-                    <span class="badge bg-success">Peso normal</span>
+                    <span class="badge bg-success">
+                        {{ classificacao(imc) }}
+                    </span>
                 </td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
