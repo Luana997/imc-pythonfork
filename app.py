@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from db import execute_query
+from db import execute_query, execute_one
 
 app = Flask(__name__)
 app.secret_key = 'imc_secret_key_2026'
@@ -95,6 +95,43 @@ def calcular():
       # flash(f'Olá {nome}, seu IMC é: {imc} - Classificação: {classificacao}', 'success') 
   
     return render_template('formulario.html')
+
+
+@app.route('/calcular/editar/<int:id>', methods=['GET', 'POST'])
+def editar_imc(id):
+
+    dados = execute_one('SELECT * FROM calculos WHERE id_calculos = %s', (id,))
+    # print(dados)
+
+    if request.method == 'POST':
+        try:
+            nome = request.form.get('nome','Não foi enviado um nome!').strip()
+            peso = request.form.get('peso').strip()
+            altura = request.form.get('altura').strip()
+
+            peso = float(peso)
+            altura = float(altura)
+
+            valores = (nome, peso, altura, id)
+
+            sql = '''
+                UPDATE calculos set
+                nome = %s, 
+                peso = %s,
+                altura = %s
+                WHERE id_calculos = %s;
+            '''
+
+            execute_query(sql, valores)
+
+            flash(f'IMC Atualizado com sucesso!', 'Warning')
+            return redirect(url_for('resultados'))
+        
+        except Exception as e:
+            flash(f'Erro ao atualizar: {e}', 'danger')
+            return render_template('formulario.html', dados=dados)
+
+    return render_template('formulario.html', dados=dados)
 
 
 if __name__ == '__main__':
